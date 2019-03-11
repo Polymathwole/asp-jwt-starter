@@ -6,8 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ASPJWTPractice.Controllers
 {
-    //[Authorize(Policy = "ApiUser", AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-    [Authorize(Policy = "ApiUser")]
+    [Authorize(Policy = "ApiUser", AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [Route("api/[controller]")]
     [ApiController]
     public class ProtectedController : ControllerBase
