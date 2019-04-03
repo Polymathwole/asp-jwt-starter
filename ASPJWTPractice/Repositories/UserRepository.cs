@@ -7,6 +7,7 @@ using ASPJWTPractice.Identity;
 using ASPJWTPractice.Db;
 using ASPJWTPractice.Request;
 using ASPJWTPractice.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace ASPJWTPractice.Repositories
 {
@@ -48,7 +49,7 @@ namespace ASPJWTPractice.Repositories
 
         public User FindUser(AppUser appUser)
         {
-            User user = _appDbContext.Users.Single(u => u.UserName == appUser.UserName);
+            User user = _appDbContext.Users.SingleOrDefault(u => u.UserName == appUser.UserName);
             return user;
         }
 
@@ -67,11 +68,37 @@ namespace ASPJWTPractice.Repositories
 
         public List<AppUser> GetAllUsers() => userManager.Users.ToList();
 
+        public async Task<User> GetByIdentId(string id)
+        {
+            return await _appDbContext.Users.FirstOrDefaultAsync(t => t.IdentityId == id);
+        }
+
         public async Task<IdentityResult> UpdateUser(AppUser user) => await userManager.UpdateAsync(user);
 
         public async Task<bool> CheckPassword(AppUser user, string password)
         {
             return await userManager.CheckPasswordAsync(user, password);
+        }
+        
+        public async Task<bool> HasValidRefreshToken(User user, string refreshToken)
+        {
+            //User usr = _appDbContext.Users.SingleOrDefault(us => us.UserName == user.UserName);
+            User usr = user;
+            await _appDbContext.Entry(usr).Collection(b => b.RefreshTokens).LoadAsync();
+            return usr.RefreshTokens.Any(rt => rt.Token == refreshToken && rt.Active);
+        }
+
+        public async Task AddRefreshToken(User user, string token, int userId, string remoteIpAddress, double minutesToExpire = 15)
+        {
+            User usr = user;
+            await _appDbContext.Entry(usr).Collection(b => b.RefreshTokens).LoadAsync();
+            usr.RefreshTokens.Add(new RefreshToken(token, DateTime.Now.AddMinutes(minutesToExpire), userId, remoteIpAddress));
+        }
+
+        public void RemoveRefreshToken(User user, string refreshToken)
+        {
+            User usr = user;
+            usr.RefreshTokens.Remove(usr.RefreshTokens.First(t => t.Token == refreshToken));
         }
     }
 }

@@ -12,7 +12,6 @@ namespace ASPJWTPractice.Request
         public string AccessToken { get; set; }
         [Required]
         public string RefreshToken { get; set; }
-        [r]
         public string SigningKey { get; }
 
         public ExchangeRefreshTokenRequest(string accessToken, string refreshToken, string signingKey)

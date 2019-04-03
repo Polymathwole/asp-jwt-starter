@@ -114,14 +114,14 @@ namespace ASPJWTPractice.Controllers
             }
         }
 
-        public ClaimsPrincipal GetPrincipalFromToken(string token, string signingKey)
+        public ClaimsPrincipal GetPrincipalFromToken(string token)
         {
             return ValidateToken(token, new TokenValidationParameters
             {
                 ValidateAudience = false,
                 ValidateIssuer = false,
                 ValidateIssuerSigningKey = true,
-                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(signingKey)),
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_authSettings.SecretKey)),
                 ValidateLifetime = false // we check expired tokens here
             });
         }

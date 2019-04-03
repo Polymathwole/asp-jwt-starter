@@ -17,7 +17,7 @@ namespace ASPJWTPractice.Db
         {
             /*var navigation = modelBuilder.Entity<User>().Metadata.FindNavigation(nameof(User.RefreshTokens));
             navigation.SetPropertyAccessMode(PropertyAccessMode.Field);*/
-            modelBuilder.Entity<User>(ConfigureUser);
+            //modelBuilder.Entity<User>(ConfigureUser);
         }
 
         public void ConfigureUser(EntityTypeBuilder<User> builder)
